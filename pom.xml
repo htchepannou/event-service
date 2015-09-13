@@ -10,7 +10,7 @@
 
     <groupId>com.tchepannou.event.service</groupId>
     <artifactId>event-service</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <build>
         <plugins>
@@ -38,8 +38,8 @@
                             <url>jdbc:mysql://localhost:3306</url>
                             <driver>com.mysql.jdbc.Driver</driver>
                             <username>root</username>
-                            <sqlCommand>DROP DATABASE IF EXISTS myapp;
-                                CREATE DATABASE myapp;</sqlCommand>
+                            <sqlCommand>DROP DATABASE IF EXISTS event_db;
+                                CREATE DATABASE event_db;</sqlCommand>
                         </configuration>
                     </execution>
                 </executions>
@@ -49,7 +49,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/uds</url>
+                    <url>jdbc:mysql://localhost:3306/event_db</url>
                     <user>root</user>
                 </configuration>
                 <dependencies>
