@@ -13,6 +13,8 @@ CREATE TABLE location(
 CREATE TABLE event(
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     calendar_id BIGINT NOT NULL,
+    recurrence_id VARCHAR(50),
+    type INT,
     location_fk BIGINT,
     name VARCHAR(255),
     description TEXT,
@@ -20,11 +22,15 @@ CREATE TABLE event(
     start_time TIME,
     end_time TIME,
     require_rsvp BIT,
+    deleted BIT,
+    created DATETIME,
+    updated DATETIME,
 
     CONSTRAINT fk_event__location_fk FOREIGN KEY (location_fk) REFERENCES location(id)
 ) ENGINE=INNODB;
 CREATE INDEX idx_event__calendar_id ON event (calendar_id);
 CREATE INDEX idx_event__start_date ON event (start_date);
+CREATE INDEX idx_event__recurrence_id ON event (recurrence_id);
 
 
 CREATE TABLE participant(
