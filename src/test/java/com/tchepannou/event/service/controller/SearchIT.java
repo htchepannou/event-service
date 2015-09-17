@@ -42,7 +42,7 @@ public class SearchIT {
                 .contentType(ContentType.JSON)
                 .content(request, ObjectMapperType.JACKSON_2)
         .when()
-            .post("/v1/calendar/search" )
+            .post("/v1/calendar/search")
         .then()
             .log()
                 .all()
@@ -59,6 +59,13 @@ public class SearchIT {
             .body("events[0].endTime", is("11:30"))
             .body("events[0].recurrenceId", nullValue())
             .body("events[0].requireRsvp", is(false))
+            .body("events[0].address.street", is("3030 Linton"))
+            .body("events[0].address.zipCode", is("H0H 0H0"))
+            .body("events[0].address.city", is("Montreal"))
+            .body("events[0].address.state", is("QC"))
+            .body("events[0].address.country", is("CA"))
+            .body("events[0].address.countryName", is("Canada"))
+            .body("events[0].address.location", is("QC, Canada"))
 
             .body("events[1].id", is(101))
             .body("events[1].calendarId", is(1000))
@@ -70,6 +77,13 @@ public class SearchIT {
             .body("events[1].endTime", is("18:30"))
             .body("events[1].recurrenceId", is("43094039"))
             .body("events[1].requireRsvp", is(true))
+            .body("events[1].address.street", is("340 Pascal"))
+            .body("events[1].address.zipCode", is("H1K 1C6"))
+            .body("events[1].address.city", is("Laval"))
+            .body("events[1].address.state", is("QC"))
+            .body("events[1].address.country", is("CA"))
+            .body("events[1].address.countryName", is("Canada"))
+            .body("events[1].address.location", is("QC, Canada"))
 
             .body("events[2].id", is(102))
             .body("events[2].calendarId", is(1001))
@@ -81,6 +95,7 @@ public class SearchIT {
             .body("events[2].endTime", is("11:30"))
             .body("events[2].recurrenceId", nullValue())
             .body("events[2].requireRsvp", is(true))
+            .body("events[2].address", nullValue())
         ;
         // @formatter:on
     }

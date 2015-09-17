@@ -34,6 +34,7 @@ public class Event extends Model {
     private long id;
     private long calendarId;
     private Long locationId;
+    private Long addressId;
     private Type type;
     private String name;
     private String description;
@@ -152,5 +153,13 @@ public class Event extends Model {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 }

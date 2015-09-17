@@ -1,8 +1,14 @@
-INSERT INTO event(id,calendar_id,recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
-  VALUES(100, 1000, null, 1, 'vs Arsenal', '2015/11/10', '10:30', '11:30', FALSE , false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a game');
+INSERT INTO address(id, street, country_code, zip_code, city, state, quality, hash)
+  VALUES(90, '3030 Linton', 'CA', 'H0H 0H0', 'Montreal', 'QC', 31, 'address#1');
 
-INSERT INTO event(id,calendar_id,recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
-VALUES(101, 1000, '43094039', 2, 'Practice101', '2015/11/12', '11:30', '18:30', true, false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a practice101');
+INSERT INTO address(id, street, country_code, zip_code, city, state, quality, hash)
+  VALUES(91, '340 Pascal', 'CA', 'H1K 1C6', 'Laval', 'QC', 31, 'address#2');
+
+INSERT INTO event(id,calendar_id, address_fk, recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
+  VALUES(100, 1000, 90, null, 1, 'vs Arsenal', '2015/11/10', '10:30', '11:30', FALSE , false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a game');
+
+INSERT INTO event(id,calendar_id, address_fk, recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
+VALUES(101, 1000, 91, '43094039', 2, 'Practice101', '2015/11/12', '11:30', '18:30', true, false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a practice101');
 
 INSERT INTO event(id,calendar_id,recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
 VALUES(102, 1001, null, 2, 'Practice102', '2015/11/12', '9:30', '11:30', true, false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a practice102');

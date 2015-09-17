@@ -1,8 +1,10 @@
 -- clean
-drop table IF EXISTS tmp_event;
 delete from participant;
-delete from location;
 delete from event;
+delete from location;
+delete from address;
+
+
 
 -- events
 INSERT INTO event(
@@ -22,9 +24,10 @@ INSERT INTO event(
   WHERE node_type_fk=4
 ;
 
+
 -- attributes
 UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET name=nattr_value WHERE nattr_name='title';
-UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET description=nattr_value WHERE nattr_name='description';
+UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET description=nattr_value WHERE nattr_name='notes';
 UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET require_rsvp=if(nattr_value='1', true, false) WHERE nattr_name='rsvp';
 UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET recurrence_id=nattr_value WHERE nattr_name='reccurence_id';
 UPDATE event JOIN is5.nattr ON id=nattr_node_fk SET type=
@@ -34,6 +37,7 @@ if(nattr_value='match', 1,
    )
 )
 WHERE nattr_name='event_type';
+
 
 -- end hour/time
 CREATE TEMPORARY TABLE tmp_event(
@@ -53,3 +57,93 @@ INSERT INTO tmp_event(id, end_minute)
 ON DUPLICATE KEY UPDATE end_minute=nattr_value;
 
 UPDATE event E JOIN tmp_event T ON E.id=T.id SET E.end_time=MAKETIME(T.end_hour, T.end_minute, 0) WHERE T.end_hour IS NOT NULL and T.end_minute IS NOT NULL;
+
+
+-- address
+INSERT INTO address(id, street, hash)
+  SELECT nattr_node_fk, nattr_value, '-' FROM is5.nattr JOIN event ON id=nattr_node_fk WHERE nattr_name='street';
+
+UPDATE address JOIN is5.nattr ON id=nattr_node_fk
+SET city=nattr_value
+WHERE nattr_name='city';
+
+UPDATE address JOIN is5.nattr ON id=nattr_node_fk
+SET state=nattr_value
+WHERE nattr_name='state';
+
+UPDATE address JOIN is5.nattr ON id=nattr_node_fk
+SET country_code=nattr_value
+WHERE nattr_name='country';
+
+UPDATE address JOIN is5.nattr ON id=nattr_node_fk
+SET zip_code=nattr_value
+WHERE nattr_name='zip_code';
+
+UPDATE address JOIN is5.nattr ON id=nattr_node_fk
+SET country_code=nattr_value
+WHERE nattr_name='country';
+
+UPDATE address
+SET hash=MD5(
+    LOWER(
+        CONCAT(
+          IF(LENGTH(state)>0,          state, ''),
+          IF(LENGTH(city)>0,           city,  ''),
+          IF(LENGTH(country_code)>0,   country_code, ''),
+          IF(LENGTH(zip_code)>0,       zip_code, ''),
+          IF(LENGTH(street)>0,         street, '')
+      )
+    )
+);
+
+UPDATE address
+SET quality=IF(LENGTH(state)>0,            1, 0)
+            + IF(LENGTH(city)>0,           2, 0)
+            + IF(LENGTH(country_code)>0,   4, 0)
+            + IF(LENGTH(zip_code)>0,       8, 0)
+            + IF(LENGTH(street)>0,         16, 0)
+;
+
+UPDATE event E JOIN address L ON E.id=L.id SET E.address_fk=L.id;
+
+
+
+-- location
+INSERT INTO location(id, name)
+  SELECT DISTINCT nattr_node_fk, nattr_value
+  FROM is5.nattr JOIN event ON nattr_node_fk=id
+  WHERE nattr_name='location';
+
+UPDATE location JOIN is5.nattr ON id=nattr_node_fk
+SET website=nattr_value
+WHERE nattr_name='url';
+
+UPDATE event E JOIN location L ON E.id=L.id SET E.location_fk=L.id;
+
+
+
+-- hash_id
+CREATE TEMPORARY TABLE tmp_hash_id(
+  hash VARCHAR(50) PRIMARY KEY,
+  address_fk BIGINT
+);
+
+INSERT INTO tmp_hash_id(hash, address_fk)
+  SELECT hash, id
+  FROM address
+  GROUP BY hash
+  ORDER BY quality DESC
+;
+
+UPDATE event E
+  JOIN address A ON E.address_fk=A.id
+  JOIN tmp_hash_id H ON H.hash=A.hash
+SET E.address_fk=H.address_fk;
+
+UPDATE location E
+  JOIN address A ON E.address_fk=A.id
+  JOIN tmp_hash_id H ON H.hash=A.hash
+SET E.address_fk=H.address_fk;
+
+UPDATE location L JOIN event E ON E.id=L.id SET L.address_fk=E.address_fk;
+
