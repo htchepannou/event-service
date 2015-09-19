@@ -66,6 +66,9 @@ public class SearchIT {
             .body("events[0].address.country", is("CA"))
             .body("events[0].address.countryName", is("Canada"))
             .body("events[0].address.location", is("QC, Canada"))
+            .body("events[0].place.id", is(190))
+            .body("events[0].place.name", is("Location 1"))
+            .body("events[0].place.website", is("http://location1.com"))
 
             .body("events[1].id", is(101))
             .body("events[1].calendarId", is(1000))
@@ -84,6 +87,9 @@ public class SearchIT {
             .body("events[1].address.country", is("CA"))
             .body("events[1].address.countryName", is("Canada"))
             .body("events[1].address.location", is("QC, Canada"))
+            .body("events[1].place.id", is(191))
+            .body("events[1].place.name", is("Location 2"))
+            .body("events[1].place.website", is("http://location2.com"))
 
             .body("events[2].id", is(102))
             .body("events[2].calendarId", is(1001))
@@ -96,6 +102,7 @@ public class SearchIT {
             .body("events[2].recurrenceId", nullValue())
             .body("events[2].requireRsvp", is(true))
             .body("events[2].address", nullValue())
+            .body("events[2].place", nullValue())
         ;
         // @formatter:on
     }

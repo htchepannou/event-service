@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.apache.commons.codec.digest.DigestUtils;
 
-public class Address {
+public class Address extends Model{
     private long id;
     private String street;
     private String zipCode;

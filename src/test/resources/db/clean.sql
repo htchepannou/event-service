@@ -1,4 +1,4 @@
 delete from participant;
 delete from event;
-delete from location;
+delete from place;
 delete from address;

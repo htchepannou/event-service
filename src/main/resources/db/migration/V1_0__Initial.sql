@@ -11,13 +11,13 @@ CREATE TABLE address(
 CREATE INDEX idx_address__hash ON address (hash);
 
 
-CREATE TABLE location(
+CREATE TABLE place(
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    address_fk BIGINT,
     website VARCHAR(2048),
     name VARCHAR(1024),
-    address_fk BIGINT,
 
-    CONSTRAINT fk_location__address_fk FOREIGN KEY (address_fk) REFERENCES address(id)
+    CONSTRAINT fk_place__address_fk FOREIGN KEY (address_fk) REFERENCES address(id)
 ) ENGINE=INNODB;
 
 
@@ -26,7 +26,7 @@ CREATE TABLE event(
     calendar_id BIGINT NOT NULL,
     recurrence_id VARCHAR(50),
     address_fk BIGINT,
-    location_fk BIGINT,
+    place_fk BIGINT,
     type INT,
     name VARCHAR(255),
     description TEXT,
@@ -38,7 +38,7 @@ CREATE TABLE event(
     created DATETIME,
     updated DATETIME,
 
-    CONSTRAINT fk_event__location_fk FOREIGN KEY (location_fk) REFERENCES location(id),
+    CONSTRAINT fk_event__place_fk FOREIGN KEY (place_fk) REFERENCES place(id),
     CONSTRAINT fk_event__address_fk FOREIGN KEY (address_fk) REFERENCES address(id)
 ) ENGINE=INNODB;
 CREATE INDEX idx_event__calendar_id ON event (calendar_id);

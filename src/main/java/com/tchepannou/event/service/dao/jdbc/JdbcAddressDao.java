@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class JdbcAddressDao implements AddressDao {
@@ -17,6 +18,10 @@ public class JdbcAddressDao implements AddressDao {
 
     @Override
     public List<Address> findByIds(Collection<Long> ids) {
+        if (ids.isEmpty()){
+            return Collections.emptyList();
+        }
+
         final String sql = "SELECT * FROM address WHERE id IN (" + JdbcUtils.toParamVars(ids) + ")";
         return new JdbcTemplate(ds).query(
                 sql,

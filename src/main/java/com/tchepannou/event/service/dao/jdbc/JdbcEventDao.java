@@ -53,7 +53,7 @@ public class JdbcEventDao implements EventDao {
         event.setId(rs.getLong("id"));
         event.setCalendarId(rs.getLong("calendar_id"));
         event.setRecurrenceId(rs.getString("recurrence_id"));
-        event.setLocationId(rs.getLong("location_fk"));
+        event.setLocationId(rs.getLong("place_fk"));
         event.setAddressId(rs.getLong("address_fk"));
         event.setName(rs.getString("name"));
         event.setDescription(rs.getString("description"));

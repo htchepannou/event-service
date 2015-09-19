@@ -1,7 +1,7 @@
 -- clean
 delete from participant;
 delete from event;
-delete from location;
+delete from place;
 delete from address;
 
 
@@ -108,17 +108,17 @@ UPDATE event E JOIN address L ON E.id=L.id SET E.address_fk=L.id;
 
 
 
--- location
-INSERT INTO location(id, name)
+-- place
+INSERT INTO place(id, name)
   SELECT DISTINCT nattr_node_fk, nattr_value
   FROM is5.nattr JOIN event ON nattr_node_fk=id
-  WHERE nattr_name='location';
+  WHERE nattr_name='place';
 
-UPDATE location JOIN is5.nattr ON id=nattr_node_fk
+UPDATE place JOIN is5.nattr ON id=nattr_node_fk
 SET website=nattr_value
 WHERE nattr_name='url';
 
-UPDATE event E JOIN location L ON E.id=L.id SET E.location_fk=L.id;
+UPDATE event E JOIN place L ON E.id=L.id SET E.place_fk=L.id;
 
 
 
@@ -140,10 +140,10 @@ UPDATE event E
   JOIN tmp_hash_id H ON H.hash=A.hash
 SET E.address_fk=H.address_fk;
 
-UPDATE location E
+UPDATE place E
   JOIN address A ON E.address_fk=A.id
   JOIN tmp_hash_id H ON H.hash=A.hash
 SET E.address_fk=H.address_fk;
 
-UPDATE location L JOIN event E ON E.id=L.id SET L.address_fk=E.address_fk;
+UPDATE place L JOIN event E ON E.id=L.id SET L.address_fk=E.address_fk;
 
