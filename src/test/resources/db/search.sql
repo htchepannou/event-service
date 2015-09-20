@@ -16,6 +16,9 @@ INSERT INTO place(id, address_fk, name, website)
 INSERT INTO event(id,calendar_id, address_fk, place_fk, recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
   VALUES(100, 1000, 90, 190, null, 1, 'vs Arsenal', '2015/11/10', '10:30', '11:30', FALSE , false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a game');
 
+INSERT INTO game(id, opponent, score1, score2, jersey_color, home, overtime, outcome, duration)
+    VALUES(100, 'Arsenal', 1, 0, 'red', true, false, 'W', 90);
+
 INSERT INTO event(id,calendar_id, address_fk, place_fk, recurrence_id,type,name,start_date,start_time,end_time,require_rsvp,deleted,created,updated,description)
 VALUES(101, 1000, 91, 191, '43094039', 2, 'Practice101', '2015/11/12', '11:30', '18:30', true, false, '2015/10/01 10:30', '2015/10/01 10:30', 'This is a practice101');
 

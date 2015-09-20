@@ -3,6 +3,7 @@ package com.tchepannou.event.service.mapper;
 import com.tchepannou.event.client.v1.EventResponse;
 import com.tchepannou.event.service.domain.Address;
 import com.tchepannou.event.service.domain.Event;
+import com.tchepannou.event.service.domain.Game;
 import com.tchepannou.event.service.domain.Place;
 
 import java.sql.Time;
@@ -15,8 +16,10 @@ public class EventResponseMapper {
     private Event event;
     private Address address;
     private Place place;
+    private Game game;
     private AddressResponseMapper addressResponseMapper = new AddressResponseMapper();
     private PlaceResponseMapper locationResponseMapper = new PlaceResponseMapper();
+    private GameResponseMapper gameResponseMapper = new GameResponseMapper();
 
     public EventResponse map (){
         DateFormat fmt = new SimpleDateFormat(TIME_FORMAT);
@@ -45,6 +48,11 @@ public class EventResponseMapper {
                     locationResponseMapper.withPlace(place).map()
             );
         }
+        if (event.getType() == Event.Type.game && game != null){
+            response.setGame(
+                    gameResponseMapper.withGame(game).map()
+            );
+        }
 
         return response;
     }
@@ -64,7 +72,10 @@ public class EventResponseMapper {
         return this;
     }
 
-
+    public EventResponseMapper withGame(Game game) {
+        this.game = game;
+        return this;
+    }
 
     private String toString (Time time, DateFormat fmt){
         return time != null ? fmt.format(time) : null;

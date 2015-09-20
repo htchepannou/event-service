@@ -3,6 +3,7 @@ package com.tchepannou.event.service.mapper;
 import com.tchepannou.event.client.v1.EventCollectionResponse;
 import com.tchepannou.event.service.domain.Address;
 import com.tchepannou.event.service.domain.Event;
+import com.tchepannou.event.service.domain.Game;
 import com.tchepannou.event.service.domain.Place;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class EventCollectionResponseMapper {
     private List<Event> events = new ArrayList<>();
     private List<Address> addresses = new ArrayList<>();
     private List<Place> places = new ArrayList<>();
+    private List<Game> games = new ArrayList<>();
 
     public EventCollectionResponse map (){
         final EventResponseMapper mapper = new EventResponseMapper();
@@ -27,12 +29,17 @@ public class EventCollectionResponseMapper {
                 .collect(Collectors.toMap(loc -> loc.getId(), loc -> loc)
         );
 
+        final Map<Long, Game> gameMap = games.stream()
+                .collect(Collectors.toMap(game -> game.getId(), game -> game)
+        );
+
         events.stream().forEach(event ->
                 response.addEvent(
                         mapper
                             .withEvent(event)
                             .withAddress(event.getAddressId() != null ? addressMap.get(event.getAddressId()) : null)
                             .withLocation(event.getLocationId() != null ? locationMap.get(event.getLocationId()) : null)
+                            .withGame(gameMap.get(event.getId()))
                             .map()
                 )
         );
@@ -52,6 +59,11 @@ public class EventCollectionResponseMapper {
 
     public EventCollectionResponseMapper withLocations(List<Place> places) {
         this.places = places;
+        return this;
+    }
+
+    public EventCollectionResponseMapper withGames(List<Game> games) {
+        this.games = games;
         return this;
     }
 }

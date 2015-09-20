@@ -70,6 +70,14 @@ public class SearchIT {
             .body("events[0].place.id", is(190))
             .body("events[0].place.name", is("Location 1"))
             .body("events[0].place.website", is("http://location1.com"))
+            .body("events[0].game.opponent", is("Arsenal"))
+            .body("events[0].game.score1", is(1))
+            .body("events[0].game.score2", is(0))
+            .body("events[0].game.jerseyColor", is("red"))
+            .body("events[0].game.home", is(true))
+            .body("events[0].game.overtime", is(false))
+            .body("events[0].game.outcome", is("win"))
+            .body("events[0].game.duration", is(90))
 
             .body("events[1].id", is(101))
             .body("events[1].calendarId", is(1000))
@@ -91,6 +99,7 @@ public class SearchIT {
             .body("events[1].place.id", is(191))
             .body("events[1].place.name", is("Location 2"))
             .body("events[1].place.website", is("http://location2.com"))
+            .body("events[2].game", nullValue())
 
             .body("events[2].id", is(102))
             .body("events[2].calendarId", is(1001))
@@ -104,6 +113,7 @@ public class SearchIT {
             .body("events[2].requireRsvp", is(true))
             .body("events[2].address", nullValue())
             .body("events[2].place", nullValue())
+            .body("events[2].game", nullValue())
         ;
         // @formatter:on
     }

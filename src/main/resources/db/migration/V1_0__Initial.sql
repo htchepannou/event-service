@@ -46,6 +46,20 @@ CREATE INDEX idx_event__start_date ON event (start_date);
 CREATE INDEX idx_event__recurrence_id ON event (recurrence_id);
 
 
+CREATE TABLE game (
+    id BIGINT NOT NULL PRIMARY KEY,
+    opponent VARCHAR(100),
+    score1 INT,
+    score2 INT,
+    jersey_color VARCHAR(20),
+    home BOOL,
+    overtime BOOL,
+    outcome CHAR(1),
+    duration INT,
+
+    CONSTRAINT fk_game__id FOREIGN KEY (id) REFERENCES event(id)
+);
+
 CREATE TABLE participant(
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     event_fk BIGINT NOT NULL,

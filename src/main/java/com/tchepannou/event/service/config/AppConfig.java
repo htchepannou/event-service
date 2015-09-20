@@ -2,9 +2,11 @@ package com.tchepannou.event.service.config;
 
 import com.tchepannou.event.service.dao.AddressDao;
 import com.tchepannou.event.service.dao.EventDao;
+import com.tchepannou.event.service.dao.GameDao;
 import com.tchepannou.event.service.dao.PlaceDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcAddressDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcEventDao;
+import com.tchepannou.event.service.dao.jdbc.JdbcGameDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcPlaceDao;
 import com.tchepannou.event.service.service.command.SearchCommand;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +77,10 @@ public class AppConfig {
 
     @Bean PlaceDao placeDao (){
         return new JdbcPlaceDao();
+    }
+
+    @Bean GameDao gameDao (){
+        return new JdbcGameDao();
     }
 
     //-- Command

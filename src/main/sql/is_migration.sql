@@ -1,5 +1,6 @@
 -- clean
 delete from participant;
+delete from game;
 delete from event;
 delete from place;
 delete from address;
@@ -105,6 +106,30 @@ SET quality=IF(LENGTH(state)>0,            1, 0)
 ;
 
 UPDATE event E JOIN address L ON E.id=L.id SET E.address_fk=L.id;
+
+-- game
+INSERT INTO game(id)
+  SELECT id FROM event WHERE type=1;
+
+UPDATE game JOIN is5.nattr ON id=nattr_node_fk
+SET score1=nattr_value
+WHERE nattr_name='score1';
+
+UPDATE game JOIN is5.nattr ON id=nattr_node_fk
+SET score2=nattr_value
+WHERE nattr_name='score2';
+
+UPDATE game JOIN is5.nattr ON id=nattr_node_fk
+SET opponent=nattr_value
+WHERE nattr_name='opponent';
+
+UPDATE game JOIN is5.nattr ON id=nattr_node_fk
+SET outcome=nattr_value
+WHERE nattr_name='outcome';
+
+UPDATE game JOIN is5.nattr ON id=nattr_node_fk
+SET jersey_color=nattr_value
+WHERE nattr_name='jersey_color';
 
 
 

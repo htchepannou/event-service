@@ -4,9 +4,11 @@ import com.tchepannou.event.client.v1.EventCollectionResponse;
 import com.tchepannou.event.client.v1.SearchRequest;
 import com.tchepannou.event.service.dao.AddressDao;
 import com.tchepannou.event.service.dao.EventDao;
+import com.tchepannou.event.service.dao.GameDao;
 import com.tchepannou.event.service.dao.PlaceDao;
 import com.tchepannou.event.service.domain.Address;
 import com.tchepannou.event.service.domain.Event;
+import com.tchepannou.event.service.domain.Game;
 import com.tchepannou.event.service.domain.Place;
 import com.tchepannou.event.service.mapper.EventCollectionResponseMapper;
 import com.tchepannou.event.service.service.CommandContext;
@@ -34,6 +36,9 @@ public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectio
     @Autowired
     PlaceDao locationDao;
 
+    @Autowired
+    GameDao gameDao;
+
     @Override
     protected EventCollectionResponse doExecute(SearchRequest request, CommandContext context) {
         try {
@@ -60,10 +65,17 @@ public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectio
                     .collect(Collectors.toSet());
             final List<Place> places = locationDao.findByIds(locationIds);
 
+            Set<Long> gameIds = events.stream()
+                    .filter(event -> Event.Type.game.equals(event.getType()))
+                    .map(Event::getId)
+                    .collect(Collectors.toSet());
+            final List<Game> games = gameDao.findByIds(gameIds);
+
             return new EventCollectionResponseMapper()
                     .withEvents(events)
                     .withAddresses(addresses)
                     .withLocations(places)
+                    .withGames(games)
                     .map();
 
         } catch (ParseException e) {
