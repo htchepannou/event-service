@@ -6,6 +6,7 @@ import com.tchepannou.event.service.domain.Event;
 import com.tchepannou.event.service.domain.Place;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -29,7 +30,7 @@ public class EventResponseMapper {
         response.setName(event.getName());
         response.setRecurrenceId(event.getRecurrenceId());
         response.setRequireRsvp(event.getRequireRsvp());
-        response.setStartDate(event.getStartDate());
+        response.setStartDate(new Timestamp(event.getStartDate().getTime()));
         response.setStartTime(toString(event.getStartTime(), fmt));
         response.setType(toString(event.getType()));
         response.setUpdated(event.getUpdated());

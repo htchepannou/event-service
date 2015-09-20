@@ -19,6 +19,7 @@ import java.util.UUID;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,7 +55,7 @@ public class SearchIT {
             .body("events[0].type", is("game"))
             .body("events[0].name", is("vs Arsenal"))
             .body("events[0].description", is("This is a game"))
-            .body("events[0].startDate", is("2015-11-10"))
+            .body("events[0].startDate", startsWith("2015-11-10"))
             .body("events[0].startTime", is("10:30"))
             .body("events[0].endTime", is("11:30"))
             .body("events[0].recurrenceId", nullValue())
@@ -75,7 +76,7 @@ public class SearchIT {
             .body("events[1].type", is("practice"))
             .body("events[1].name", is("Practice101"))
             .body("events[1].description", is("This is a practice101"))
-            .body("events[1].startDate", is("2015-11-12"))
+            .body("events[1].startDate", startsWith("2015-11-12"))
             .body("events[1].startTime", is("11:30"))
             .body("events[1].endTime", is("18:30"))
             .body("events[1].recurrenceId", is("43094039"))
@@ -96,7 +97,7 @@ public class SearchIT {
             .body("events[2].type", is("practice"))
             .body("events[2].name", is("Practice102"))
             .body("events[2].description", is("This is a practice102"))
-            .body("events[2].startDate", is("2015-11-12"))
+            .body("events[2].startDate", startsWith("2015-11-12"))
             .body("events[2].startTime", is("09:30"))
             .body("events[2].endTime", is("11:30"))
             .body("events[2].recurrenceId", nullValue())
