@@ -43,7 +43,7 @@ public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectio
     protected EventCollectionResponse doExecute(SearchRequest request, CommandContext context) {
         try {
 
-            DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+            final DateFormat df = new SimpleDateFormat(DATE_FORMAT);
 
             final List<Event> events = eventDao.search(
                     request.getCalendarIds(),
@@ -53,19 +53,19 @@ public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectio
                     request.getOffset()
             );
 
-            Set<Long> addressIds = events.stream()
+            final Set<Long> addressIds = events.stream()
                     .map(Event::getAddressId)
                     .filter(id -> id != null)
                     .collect(Collectors.toSet());
-            List<Address> addresses = addressDao.findByIds(addressIds);
+            final List<Address> addresses = addressDao.findByIds(addressIds);
 
-            Set<Long> locationIds = events.stream()
-                    .map(Event::getLocationId)
+            final Set<Long> locationIds = events.stream()
+                    .map(Event::getPlaceId)
                     .filter(id -> id != null)
                     .collect(Collectors.toSet());
             final List<Place> places = locationDao.findByIds(locationIds);
 
-            Set<Long> gameIds = events.stream()
+            final Set<Long> gameIds = events.stream()
                     .filter(event -> Event.Type.game.equals(event.getType()))
                     .map(Event::getId)
                     .collect(Collectors.toSet());

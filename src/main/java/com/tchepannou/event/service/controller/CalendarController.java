@@ -3,10 +3,14 @@ package com.tchepannou.event.service.controller;
 import com.tchepannou.core.client.v1.ErrorResponse;
 import com.tchepannou.core.http.Http;
 import com.tchepannou.event.client.v1.EventCollectionResponse;
+import com.tchepannou.event.client.v1.EventResponse;
 import com.tchepannou.event.client.v1.SearchRequest;
+import com.tchepannou.event.service.service.command.GetCommand;
 import com.tchepannou.event.service.service.command.SearchCommand;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +42,9 @@ public class CalendarController {
     @Autowired
     private SearchCommand searchCommand;
 
+    @Autowired
+    private GetCommand getCommand;
+
     //-- REST methods
     @RequestMapping(method = RequestMethod.POST, value="/search")
     @ApiOperation("Search for events")
@@ -47,6 +55,22 @@ public class CalendarController {
         return searchCommand.execute(request,
                 new CommandContextImpl()
                         .withTransactionId(transactionId)
+        );
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="/event/{id}")
+    @ApiOperation("Return an event")
+    @ApiResponses({
+            @ApiResponse(code=404, message="not_found")
+    })
+    public EventResponse get(
+            @RequestHeader(Http.HEADER_TRANSACTION_ID) String transactionId,
+            @PathVariable long id
+    ) {
+        return getCommand.execute(null,
+                new CommandContextImpl()
+                    .withTransactionId(transactionId)
+                    .withId(id)
         );
     }
 

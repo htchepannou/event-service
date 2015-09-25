@@ -38,7 +38,7 @@ public class EventCollectionResponseMapper {
                         mapper
                             .withEvent(event)
                             .withAddress(event.getAddressId() != null ? addressMap.get(event.getAddressId()) : null)
-                            .withLocation(event.getLocationId() != null ? locationMap.get(event.getLocationId()) : null)
+                            .withLocation(event.getPlaceId() != null ? locationMap.get(event.getPlaceId()) : null)
                             .withGame(gameMap.get(event.getId()))
                             .map()
                 )

@@ -8,6 +8,7 @@ import com.tchepannou.event.service.dao.jdbc.JdbcAddressDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcEventDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcGameDao;
 import com.tchepannou.event.service.dao.jdbc.JdbcPlaceDao;
+import com.tchepannou.event.service.service.command.GetCommand;
 import com.tchepannou.event.service.service.command.SearchCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -87,5 +88,10 @@ public class AppConfig {
     @Bean
     SearchCommand searchCommand (){
         return new SearchCommand();
+    }
+
+    @Bean
+    GetCommand getCommand () {
+        return new GetCommand();
     }
 }

@@ -17,6 +17,16 @@ public class JdbcPlaceDao implements PlaceDao {
     private DataSource ds;
 
     @Override
+    public Place findById(long id) {
+        final String sql = "SELECT * FROM place WHERE id=?";
+        return new JdbcTemplate(ds).queryForObject(
+                sql,
+                new Object[] {id},
+                (rs, i) -> map(rs)
+        );
+    }
+
+    @Override
     public List<Place> findByIds(Collection<Long> ids) {
         if (ids.isEmpty()){
             return Collections.emptyList();

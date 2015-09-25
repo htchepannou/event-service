@@ -20,6 +20,16 @@ public class JdbcEventDao implements EventDao {
 
     //-- EventDao overrides
     @Override
+    public Event findById(long id) {
+        final String sql = "SELECT * FROM event WHERE id=? AND deleted=?";
+        return new JdbcTemplate(ds).queryForObject(
+                sql,
+                new Object[] {id, false},
+                (rs, i) -> map(rs)
+        );
+    }
+
+    @Override
     public List<Event> search(Collection<Long> calendarIds, Date startDate, Date endDate, int limit, int offset) {
         if (calendarIds.isEmpty()){
             return Collections.emptyList();
@@ -53,7 +63,7 @@ public class JdbcEventDao implements EventDao {
         event.setId(rs.getLong("id"));
         event.setCalendarId(rs.getLong("calendar_id"));
         event.setRecurrenceId(rs.getString("recurrence_id"));
-        event.setLocationId((Long) rs.getObject("place_fk"));
+        event.setPlaceId((Long) rs.getObject("place_fk"));
         event.setAddressId((Long) rs.getObject("address_fk"));
         event.setName(rs.getString("name"));
         event.setDescription(rs.getString("description"));

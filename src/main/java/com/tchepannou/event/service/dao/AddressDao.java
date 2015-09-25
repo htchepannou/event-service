@@ -6,5 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface AddressDao {
+    Address findById (long id);
+
     List<Address> findByIds (Collection<Long> ids);
 }

@@ -33,7 +33,7 @@ public class Event extends Model {
     //-- Attributes
     private long id;
     private long calendarId;
-    private Long locationId;
+    private Long placeId;
     private Long addressId;
     private Type type;
     private String name;
@@ -63,12 +63,12 @@ public class Event extends Model {
         this.calendarId = calendarId;
     }
 
-    public Long getLocationId() {
-        return locationId;
+    public Long getPlaceId() {
+        return placeId;
     }
 
-    public void setLocationId(Long locationId) {
-        this.locationId = locationId;
+    public void setPlaceId(Long placeId) {
+        this.placeId = placeId;
     }
 
     public Type getType() {

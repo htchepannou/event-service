@@ -17,6 +17,16 @@ public class JdbcAddressDao implements AddressDao {
     private DataSource ds;
 
     @Override
+    public Address findById(long id) {
+        final String sql = "SELECT * FROM address WHERE id=?";
+        return new JdbcTemplate(ds).queryForObject(
+                sql,
+                new Object[] {id},
+                (rs, i) -> map(rs)
+        );
+    }
+
+    @Override
     public List<Address> findByIds(Collection<Long> ids) {
         if (ids.isEmpty()){
             return Collections.emptyList();
