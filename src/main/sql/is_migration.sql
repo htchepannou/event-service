@@ -137,7 +137,7 @@ WHERE nattr_name='jersey_color';
 INSERT INTO place(id, name)
   SELECT DISTINCT nattr_node_fk, nattr_value
   FROM is5.nattr JOIN event ON nattr_node_fk=id
-  WHERE nattr_name='place';
+  WHERE nattr_name='location';
 
 UPDATE place JOIN is5.nattr ON id=nattr_node_fk
 SET website=nattr_value

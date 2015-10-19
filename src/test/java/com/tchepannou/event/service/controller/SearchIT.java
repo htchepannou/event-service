@@ -1,9 +1,6 @@
 package com.tchepannou.event.service.controller;
 
-import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.internal.mapper.ObjectMapperType;
 import com.tchepannou.core.http.Http;
-import com.tchepannou.event.client.v1.SearchRequest;
 import com.tchepannou.event.service.Starter;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
@@ -13,13 +10,10 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,18 +26,11 @@ public class SearchIT {
     //-- Test
     @Test
     public void should_returns_events (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate("2015/11/10");
-        request.setEndDate("2015/11/17");
-        request.setCalendarIds(Arrays.asList(1000L, 1001L));
-
         // @formatter:off
         given()
                 .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
         .when()
-            .post("/v1/calendar/search")
+            .get("/v1/calendar/1000+1001/search/from/2015-11-10/to/2015-11-17")
         .then()
             .log()
                 .all()
@@ -118,116 +105,37 @@ public class SearchIT {
         // @formatter:on
     }
 
-    @Test
-    public void should_returns_empty_for_request_with_no_calendar_id (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate("2014/01/01");
-        request.setEndDate("2015/01/01");
-
-        // @formatter:off
-        given()
-                .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
-        .when()
-            .post("/v1/calendar/search" )
-        .then()
-            .log()
-                .all()
-            .statusCode(HttpStatus.SC_OK)
-            .body("events", hasSize(0))
-        ;
-        // @formatter:on
-    }
-
-    @Test
-    public void should_returns_400_for_no_start_date (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate(null);
-        request.setEndDate("2015/01/01");
-
-        // @formatter:off
-        given()
-                .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
-        .when()
-            .post("/v1/calendar/search" )
-        .then()
-            .log()
-                .all()
-            .statusCode(400)
-            .body("code", is(400))
-            .body("text", is("start_date_missing"))
-        ;
-        // @formatter:on
-    }
-
-    @Test
-    public void should_returns_400_for_no_end_date (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate("2015/01/01");
-        request.setEndDate(null);
-
-        // @formatter:off
-        given()
-                .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
-        .when()
-            .post("/v1/calendar/search" )
-        .then()
-            .log()
-                .all()
-            .statusCode(400)
-            .body("code", is(400))
-            .body("text", is("end_date_missing"))
-        ;
-        // @formatter:on
-    }
 
     @Test
     public void should_returns_400_for_malformed_start_date (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate("fdlkfdlk");
-        request.setEndDate("2015/01/01");
-
         // @formatter:off
         given()
                 .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
         .when()
-            .post("/v1/calendar/search" )
+            .get("/v1/calendar/1000+1001/search/from/20151110/to/2015-11-17")
         .then()
             .log()
                 .all()
             .statusCode(400)
             .body("code", is(400))
-            .body("text", is("start_date_format"))
+            .body("text", is("bad_date_format"))
         ;
         // @formatter:on
     }
 
     @Test
     public void should_returns_400_for_malformed_end_date (){
-        SearchRequest request = new SearchRequest();
-        request.setStartDate("2015/01/01");
-        request.setEndDate("fdlkfdlk");
-
         // @formatter:off
         given()
                 .header(Http.HEADER_TRANSACTION_ID, transactionId)
-                .contentType(ContentType.JSON)
-                .content(request, ObjectMapperType.JACKSON_2)
         .when()
-            .post("/v1/calendar/search" )
+            .get("/v1/calendar/1000+1001/search/from/2015-11-10/to/20151117")
         .then()
             .log()
                 .all()
             .statusCode(400)
             .body("code", is(400))
-            .body("text", is("end_date_format"))
+            .body("text", is("bad_date_format"))
         ;
         // @formatter:on
     }

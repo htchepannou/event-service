@@ -1,7 +1,7 @@
 package com.tchepannou.event.service.service.command;
 
 import com.tchepannou.event.client.v1.EventCollectionResponse;
-import com.tchepannou.event.client.v1.SearchRequest;
+import com.tchepannou.event.service.client.v1.SearchRequest;
 import com.tchepannou.event.service.dao.AddressDao;
 import com.tchepannou.event.service.dao.EventDao;
 import com.tchepannou.event.service.dao.GameDao;
@@ -16,17 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Scope(value = WebApplicationContext.SCOPE_REQUEST)
 public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectionResponse>{
-    private static final String DATE_FORMAT = "yyyy/MM/dd";
-
     @Autowired
     EventDao eventDao;
 
@@ -41,45 +36,37 @@ public class SearchCommand extends AbstractCommand<SearchRequest, EventCollectio
 
     @Override
     protected EventCollectionResponse doExecute(SearchRequest request, CommandContext context) {
-        try {
+        final List<Event> events = eventDao.search(
+                request.getCalendarIds(),
+                request.getStartDate(),
+                request.getEndDate(),
+                context.getLimit(),
+                context.getOffset()
+        );
 
-            final DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+        final Set<Long> addressIds = events.stream()
+                .map(Event::getAddressId)
+                .filter(id -> id != null)
+                .collect(Collectors.toSet());
+        final List<Address> addresses = addressDao.findByIds(addressIds);
 
-            final List<Event> events = eventDao.search(
-                    request.getCalendarIds(),
-                    df.parse(request.getStartDate()),
-                    df.parse(request.getEndDate()),
-                    request.getLimit(),
-                    request.getOffset()
-            );
+        final Set<Long> locationIds = events.stream()
+                .map(Event::getPlaceId)
+                .filter(id -> id != null)
+                .collect(Collectors.toSet());
+        final List<Place> places = locationDao.findByIds(locationIds);
 
-            final Set<Long> addressIds = events.stream()
-                    .map(Event::getAddressId)
-                    .filter(id -> id != null)
-                    .collect(Collectors.toSet());
-            final List<Address> addresses = addressDao.findByIds(addressIds);
+        final Set<Long> gameIds = events.stream()
+                .filter(event -> Event.Type.game.equals(event.getType()))
+                .map(Event::getId)
+                .collect(Collectors.toSet());
+        final List<Game> games = gameDao.findByIds(gameIds);
 
-            final Set<Long> locationIds = events.stream()
-                    .map(Event::getPlaceId)
-                    .filter(id -> id != null)
-                    .collect(Collectors.toSet());
-            final List<Place> places = locationDao.findByIds(locationIds);
-
-            final Set<Long> gameIds = events.stream()
-                    .filter(event -> Event.Type.game.equals(event.getType()))
-                    .map(Event::getId)
-                    .collect(Collectors.toSet());
-            final List<Game> games = gameDao.findByIds(gameIds);
-
-            return new EventCollectionResponseMapper()
-                    .withEvents(events)
-                    .withAddresses(addresses)
-                    .withLocations(places)
-                    .withGames(games)
-                    .map();
-
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return new EventCollectionResponseMapper()
+                .withEvents(events)
+                .withAddresses(addresses)
+                .withLocations(places)
+                .withGames(games)
+                .map();
     }
 }
